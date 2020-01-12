@@ -1,0 +1,29 @@
+{
+  "name": "man-brewing-api",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./app/man_brewing.js"
+  },
+  "keywords": [
+    "beer",
+    "brewing"
+  ],
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "description": "ManBrewingApi",
+  "author": {
+    "name": "ndykstra"
+  },
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "dotenv": "^7.0.0",
+    "express": "^4.17.1",
+    "mysql": "^2.17.1",
+    "node-fetch": "^2.6.0",
+    "winston": "^3.2.1"
+  }
+}
