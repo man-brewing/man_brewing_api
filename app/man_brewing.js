@@ -47,7 +47,7 @@ con.connect(function (err) {
  * Handles POST requests from the environment monitor and
  * saves the data to the database.
  */
-app.post('/', (req, res) => {
+app.post('/beerroom/environment', (req, res) => {
     logger.debug('POST');
 
     fetch(`https://api.openweathermap.org/data/2.5/weather?id=${process.env.WEATHER_CITY_ID}&appid=${process.env.WEATHER_API_KEY}&units=metric`)
