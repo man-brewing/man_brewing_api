@@ -1,8 +1,8 @@
 require('dotenv').config();
 const express = require('express');
 const logger  = require('../lib/log.js')('beerroom');
-var mysql = require('mysql');
-var bodyParser = require('body-parser')
+const mysql = require('mysql');
+const bodyParser = require('body-parser')
 const fetch = require("node-fetch");
 
 var app = express();
