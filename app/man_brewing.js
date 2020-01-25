@@ -24,6 +24,14 @@ var con = mysql.createConnection({
     database: process.env.DB_NAME
 });
 
+/**
+ * Connect to the MySQL database.
+ */
+con.connect(function (err) {
+    if (err) throw err;
+    logger.debug('Database connected');
+});
+
 const logger = winston.createLogger({
     format: winston.format.combine(
             winston.format.timestamp({format: 'YYYY-MM-DD HH:mm:ss'}),
@@ -56,21 +64,22 @@ app.get('/', function (req, res) {
     logger.debug('GET');
 
     res.setHeader('Content-Type', 'application/json');
-    var latestTempData = 'SELECT ambient_temp, ambient_humid FROM DataLog ORDER BY TIMESTAMP DESC LIMIT 1';
+    let latestTempData = 'SELECT ambient_temp, ambient_humid FROM DataLog ORDER BY TIMESTAMP DESC LIMIT 1';
     con.query(latestTempData, function (err, result) {
         if (err) throw err;
 
         logger.debug('selected data from mysql', result[0]);
     
         res.status(200);
-        res.send({ status: '404', temp: result[0].ambient_temp, humidity: result[0].ambient_humid, timestamp: result[0].timestamp});
+        res.send({ status: '200', temp: result[0].ambient_temp, humidity: result[0].ambient_humid, timestamp: result[0].timestamp});
     });
 });
 
 /**
  * Redirect to history with default limit.
  */
-app.get('/history/', function (req, res) {
+app.get('/history', function (req, res) {
+    logger.debug('Redirect history');
     res.redirect('/history/5');
 });
 
@@ -81,11 +90,11 @@ app.get('/history/:limit', function (req, res) {
     logger.debug('GET history');
 
     let limit = 100;
-    if (!isNaN(req.params.limit)){
+    if (!Number.isInteger(req.params.limit)){
         limit = parseInt(req.params.limit);
     }
 
-    var latestTempData = 'SELECT temperature, humidity, ambient_temp, ambient_humid, timestamp FROM DataLog ORDER BY TIMESTAMP DESC LIMIT ' + limit;
+    let latestTempData = 'SELECT temperature, humidity, ambient_temp, ambient_humid, timestamp FROM DataLog ORDER BY TIMESTAMP DESC LIMIT ' + limit;
     con.query(latestTempData, function (err, result) {
         if (err) throw err;
     
@@ -93,14 +102,6 @@ app.get('/history/:limit', function (req, res) {
         res.status(200);
         res.send({ results: result});
     });
-});
-
-/**
- * Connect to the MySQL database.
- */
-con.connect(function (err) {
-    if (err) throw err;
-    logger.debug('Database connected');
 });
 
 /**
@@ -113,8 +114,8 @@ app.post('/', (req, res) => {
     fetch(`https://api.openweathermap.org/data/2.5/weather?id=${process.env.WEATHER_CITY_ID}&appid=${process.env.WEATHER_API_KEY}&units=metric`)
         .then((res) => res.json())
         .then((data) => {
-            var ambient_temp = 0.00;
-            var ambient_humid = 0.00;
+            let ambient_temp = 0.00;
+            let ambient_humid = 0.00;
 
             logger.debug('got weather data');
     
@@ -122,7 +123,7 @@ app.post('/', (req, res) => {
             ambient_humid = data.main.humidity;
             
             // save those data to the database
-            var insertQuery = 'INSERT INTO DataLog (temperature, humidity, ambient_temp, ambient_humid) VALUES (' + mysql.escape(req.body.temp) + ', ' + mysql.escape(req.body.humidity) + ', ' + mysql.escape(ambient_temp) + ', ' + mysql.escape(ambient_humid) + ')';
+            let insertQuery = 'INSERT INTO DataLog (temperature, humidity, ambient_temp, ambient_humid) VALUES (' + mysql.escape(req.body.temp) + ', ' + mysql.escape(req.body.humidity) + ', ' + mysql.escape(ambient_temp) + ', ' + mysql.escape(ambient_humid) + ')';
             con.query(insertQuery, function (err, result) {
                 if (err) throw err;
 
@@ -152,7 +153,7 @@ app.use(function (req, res, next) {
     logger.error('404 Not Found');
     logger.error(req);
 
-    var err = new Error('Not Found');
+    let err = new Error('Not Found');
     err.status = 404;
     next(err);
 });
