@@ -25,14 +25,49 @@ var con = mysql.createConnection({
 });
 
 /**
- * No GETS.
+ * Basic GET request sends back latest weather data.
  */
 app.get('/', function (req, res) {
     logger.debug('GET');
 
     res.setHeader('Content-Type', 'application/json');
-    res.status(404);
-    res.send({ status: '404', message: 'get lost, chump'});
+    var latestTempData = 'SELECT ambient_temp, ambient_humid FROM DataLog ORDER BY TIMESTAMP DESC LIMIT 1';
+    con.query(latestTempData, function (err, result) {
+        if (err) throw err;
+
+        logger.debug('selected data from mysql', result[0]);
+    
+        res.status(200);
+        res.send({ status: '404', temp: result[0].ambient_temp, humidity: result[0].ambient_humid, timestamp: result[0].timestamp});
+    });
+});
+
+/**
+ * Redirect to history with default limit.
+ */
+app.get('/history/', function (req, res) {
+    res.redirect('/history/5');
+});
+
+/**
+ * Get the most recent weather data, limiting to the specified number.
+ */
+app.get('/history/:limit', function (req, res) {
+    logger.debug('GET history');
+
+    let limit = 100;
+    if (!isNaN(req.params.limit)){
+        limit = parseInt(req.params.limit);
+    }
+
+    var latestTempData = 'SELECT temperature, humidity, ambient_temp, ambient_humid, timestamp FROM DataLog ORDER BY TIMESTAMP DESC LIMIT ' + limit;
+    con.query(latestTempData, function (err, result) {
+        if (err) throw err;
+    
+        res.setHeader('Content-Type', 'application/json');
+        res.status(200);
+        res.send({ results: result});
+    });
 });
 
 /**
