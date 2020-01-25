@@ -1,9 +1,9 @@
 require('dotenv').config();
 const express = require('express');
-const logger  = require('../lib/log.js')('beerroom');
 const mysql = require('mysql');
 const bodyParser = require('body-parser')
 const fetch = require("node-fetch");
+const winston = require('winston');
 
 var app = express();
 
@@ -23,6 +23,31 @@ var con = mysql.createConnection({
     password: process.env.DB_PASS,
     database: process.env.DB_NAME
 });
+
+const logger = winston.createLogger({
+    format: winston.format.combine(
+            winston.format.timestamp({format: 'YYYY-MM-DD HH:mm:ss'}),
+            winston.format.simple()
+    ),
+    transports: [
+        new winston.transports.File({
+            filename: `beerroom.log`,
+            level: 'info'
+        })            
+    ]
+});
+
+if (process.env.ENV !== 'PRODUCTION') {
+    logger.add(new winston.transports.File({
+        filename: `beerroom_debug.log`,
+        level: 'debug'
+    }));
+
+    logger.add(
+        new winston.transports.Console({
+            level: 'debug'
+    }));
+} 
 
 /**
  * Basic GET request sends back latest weather data.
