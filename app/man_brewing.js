@@ -29,7 +29,7 @@ var con = mysql.createConnection({
  */
 con.connect(function (err) {
     if (err) throw err;
-    logger.debug('Database connected');
+    logger.info('Database connected');
 });
 
 const logger = winston.createLogger({
@@ -63,15 +63,13 @@ if (process.env.ENV !== 'PRODUCTION') {
 app.get('/', function (req, res) {
     logger.debug('GET');
 
-    res.setHeader('Content-Type', 'application/json');
-    let latestTempData = 'SELECT ambient_temp, ambient_humid FROM DataLog ORDER BY TIMESTAMP DESC LIMIT 1';
+    let latestTempData = 'SELECT ambient_temp, ambient_humid, timestamp FROM DataLog ORDER BY TIMESTAMP DESC LIMIT 1';
     con.query(latestTempData, function (err, result) {
         if (err) throw err;
 
         logger.debug('selected data from mysql', result[0]);
     
-        res.status(200);
-        res.send({ status: '200', temp: result[0].ambient_temp, humidity: result[0].ambient_humid, timestamp: result[0].timestamp});
+        res.status(200).json({ status: '200', temp: result[0].ambient_temp, humidity: result[0].ambient_humid, timestamp: result[0].timestamp });
     });
 });
 
@@ -89,18 +87,15 @@ app.get('/history', function (req, res) {
 app.get('/history/:limit', function (req, res) {
     logger.debug('GET history');
 
-    let limit = 100;
-    if (!Number.isInteger(req.params.limit)){
-        limit = parseInt(req.params.limit);
-    }
+    let limit = Number.isInteger(req.params.limit) ? Number.parseInt(req.params.limit) : 100;
 
-    let latestTempData = 'SELECT temperature, humidity, ambient_temp, ambient_humid, timestamp FROM DataLog ORDER BY TIMESTAMP DESC LIMIT ' + limit;
+    let latestTempData = 'SELECT temperature, humidity, ambient_temp, ambient_humid, timestamp FROM DataLog ORDER BY TIMESTAMP DESC LIMIT ' + mysql.escape(limit);
     con.query(latestTempData, function (err, result) {
         if (err) throw err;
+
+        logger.debug('result', result);
     
-        res.setHeader('Content-Type', 'application/json');
-        res.status(200);
-        res.send({ results: result});
+        res.status(200).json({ results: result});
     });
 });
 
@@ -133,16 +128,13 @@ app.post('/', (req, res) => {
 
                 logger.debug('inserted data to mysql');
 
-                res.status(200);
-                res.send("received");
+                res.status(200).send("received");
             });
         })
         .catch(error => {
             logger.error('an error occurred getting weather data', error.message);
 
-            res.setHeader('Content-Type', 'application/json');
-            res.status(404);
-            res.send({ status: '404', message: error.message});
+            res.status(500).json({ status: '500', message: error.message});
         });
 });
 
@@ -166,8 +158,7 @@ if (process.env.ENV === 'DEVELOPMENT') {
         logger.error(err);
         logger.error(req);
 
-        res.status(err.status || 500);
-        res.send(err);
+        res.status(err.status || 500).send(err);
     });
 }
 
@@ -178,8 +169,7 @@ app.use(function (err, req, res, next) {
     logger.error(err);
     logger.error(req);
 
-    res.status(err.status || 500);
-    res.send('error');
+    res.status(err.status || 500).send('error');
 });
 
 /**
