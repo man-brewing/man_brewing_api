@@ -80,14 +80,14 @@ app.get('/', function (req, res) {
  */
 app.get('/history', function (req, res) {
     logger.debug('Redirect history');
-    res.redirect('/history/5');
+    res.redirect('history/5');
 });
 
 /**
  * Get the most recent weather data, limiting to the specified number.
  */
 app.get('/history/:limit', function (req, res) {
-    logger.debug('GET history; params: ' + Number.parseInt(req.params.limit));
+    logger.debug('GET history; params: ' + req.params.limit);
 
     let limit = !isNaN(req.params.limit) ? Number.parseInt(req.params.limit) : 100;
 
@@ -146,7 +146,11 @@ app.post('/', (req, res) => {
  */
 app.use(function (req, res, next) {
     logger.error('404 Not Found');
-    logger.error(req);
+    logger.error(req.protocol);
+    logger.error(req.hostname);
+    logger.error(req.path);
+    logger.error(req.originalUrl);
+    logger.error(req.method);
 
     let err = new Error('Not Found');
     err.status = 404;
@@ -172,7 +176,7 @@ app.use(function (err, req, res, next) {
     logger.error(err);
     logger.error(req);
 
-    res.status(err.status || 500).send('error');
+    res.status(err.status || 500).json({ message: "This request was not handled." });
 });
 
 /**
