@@ -60,6 +60,16 @@ if (process.env.ENV !== 'PRODUCTION') {
 }
 
 /**
+ * Enable CORS for cross domain API requests.
+ */
+app.use(function(req, res, next) {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+    next();
+});
+  
+
+/**
  * Basic GET request sends back latest weather data.
  */
 app.get('/', function (req, res) {
