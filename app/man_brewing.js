@@ -33,6 +33,9 @@ con.connect(function (err) {
     logger.info('Database connected');
 });
 
+/**
+ * Make the default logger.
+ */
 const logger = winston.createLogger({
     format: winston.format.combine(
             winston.format.timestamp({format: 'YYYY-MM-DD HH:mm:ss'}),
@@ -40,23 +43,21 @@ const logger = winston.createLogger({
     ),
     transports: [
         new winston.transports.File({
-            filename: path.join(__dirname, 'beerroom.log'),
-            level: 'info'
+            filename: path.join(process.env.LOG_PATH, 'beerroom_api.log'),
+            level: process.env.LOG_LEVEL
         })            
     ]
 });
 
+/** 
+ * Add a console logger if we are not in production.
+ */
 if (process.env.ENV !== 'PRODUCTION') {
-    logger.add(new winston.transports.File({
-        filename: `beerroom_debug.log`,
-        level: 'debug'
-    }));
-
     logger.add(
         new winston.transports.Console({
-            level: 'debug'
+            level: process.env.LOG_LEVEL
     }));
-} 
+}
 
 /**
  * Basic GET request sends back latest weather data.
@@ -86,15 +87,16 @@ app.get('/history', function (req, res) {
  * Get the most recent weather data, limiting to the specified number.
  */
 app.get('/history/:limit', function (req, res) {
-    logger.debug('GET history');
+    logger.debug('GET history; params: ' + Number.parseInt(req.params.limit));
 
-    let limit = Number.isInteger(req.params.limit) ? Number.parseInt(req.params.limit) : 100;
+    let limit = !isNaN(req.params.limit) ? Number.parseInt(req.params.limit) : 100;
 
     let latestTempData = 'SELECT temperature, humidity, ambient_temp, ambient_humid, timestamp FROM DataLog ORDER BY TIMESTAMP DESC LIMIT ' + mysql.escape(limit);
+
+    logger.debug('sql ' + latestTempData);
+
     con.query(latestTempData, function (err, result) {
         if (err) throw err;
-
-        logger.debug('result', result);
     
         res.status(200).json({ results: result});
     });
