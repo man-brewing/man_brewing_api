@@ -4,6 +4,7 @@ const mysql = require('mysql');
 const bodyParser = require('body-parser')
 const fetch = require("node-fetch");
 const winston = require('winston');
+const path = require('path');
 
 var app = express();
 
@@ -39,7 +40,7 @@ const logger = winston.createLogger({
     ),
     transports: [
         new winston.transports.File({
-            filename: `beerroom.log`,
+            filename: path.join(__dirname, 'beerroom.log'),
             level: 'info'
         })            
     ]
