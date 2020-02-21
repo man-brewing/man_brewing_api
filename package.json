@@ -9,7 +9,6 @@
     "beer",
     "brewing"
   ],
-  "type": "module",
   "repository": {
     "type": "git",
     "url": ""
