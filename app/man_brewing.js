@@ -43,7 +43,7 @@ const logger = winston.createLogger({
     ),
     transports: [
         new winston.transports.File({
-            filename: path.join(process.env.LOG_PATH, 'beerroom_api.log'),
+            filename: path.join(__dirname, '../../logs', 'beerroom_api.log'),
             level: process.env.LOG_LEVEL
         })            
     ]
