@@ -5,8 +5,10 @@ const bodyParser = require('body-parser')
 const fetch = require("node-fetch");
 const winston = require('winston');
 const path = require('path');
+const cors = require('cors');
 
 var app = express();
+app.use(cors());
 
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -58,16 +60,6 @@ if (process.env.ENV !== 'PRODUCTION') {
             level: process.env.LOG_LEVEL
     }));
 }
-
-/**
- * Enable CORS for cross domain API requests.
- */
-app.use(function(req, res, next) {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-    next();
-});
-  
 
 /**
  * Basic GET request sends back latest weather data.
