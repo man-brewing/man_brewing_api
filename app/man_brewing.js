@@ -67,7 +67,7 @@ if (process.env.ENV !== 'PRODUCTION') {
 app.get('/', function (req, res) {
     logger.debug('GET');
 
-    let latestTempData = 'SELECT ambient_temp, ambient_humid, timestamp FROM DataLog ORDER BY TIMESTAMP ASC LIMIT 1';
+    let latestTempData = 'SELECT ambient_temp, ambient_humid, timestamp FROM DataLog ORDER BY timestamp DESC LIMIT 1;';
     con.query(latestTempData, function (err, result) {
         if (err) throw err;
 
@@ -93,7 +93,7 @@ app.get('/history/:limit', function (req, res) {
 
     let limit = !isNaN(req.params.limit) ? Number.parseInt(req.params.limit) : 100;
 
-    let latestTempData = `SELECT temperature, humidity, ambient_temp, ambient_humid, timestamp FROM DataLog ORDER BY TIMESTAMP DESC LIMIT ${mysql.escape(limit)} ORDER BY timestamp ASC`;
+    let latestTempData = `SELECT temperature, humidity, ambient_temp, ambient_humid, timestamp FROM DataLog ORDER BY TIMESTAMP DESC LIMIT ${mysql.escape(limit)};`;
 
     logger.debug('sql ' + latestTempData);
 
@@ -107,7 +107,7 @@ app.get('/history/:limit', function (req, res) {
 app.get('/history/:startDate/:endDate', function (req, res) {
     logger.debug(`GET history; params: ${req.params.startDate} ${req.params.endDate}`);
 
-    let timeboxEnvironmentQuery = `SELECT temperature, humidity, ambient_temp, ambient_humid, timestamp FROM DataLog WHERE timestamp BETWEEN ${mysql.escape(req.params.startDate)} AND ${mysql.escape(req.params.endDate)} ORDER BY timestamp ASC;`;
+    let timeboxEnvironmentQuery = `SELECT temperature, humidity, ambient_temp, ambient_humid, timestamp FROM DataLog WHERE timestamp BETWEEN ${mysql.escape(req.params.startDate)} AND ${mysql.escape(req.params.endDate)} ORDER BY timestamp DESC;`;
 
     logger.debug('sql ' + timeboxEnvironmentQuery);
 
