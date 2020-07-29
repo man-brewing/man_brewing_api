@@ -113,8 +113,8 @@ app.get('/history/:startDate/:endDate', function (req, res) {
 
     con.query(timeboxEnvironmentQuery, function (err, result) {
         if (err) throw err;
-        
-        res.status(200).json({ results: result});
+
+        res.status(200).json(result);        
     });
 });
 
