@@ -104,10 +104,13 @@ app.get('/history/:limit', function (req, res) {
     });
 });
 
+/**
+ * Gets the history between two dates
+ */
 app.get('/history/:startDate/:endDate', function (req, res) {
     logger.debug(`GET history; params: ${req.params.startDate} ${req.params.endDate}`);
 
-    let timeboxEnvironmentQuery = `SELECT temperature, humidity, ambient_temp, ambient_humid, timestamp FROM DataLog WHERE timestamp BETWEEN ${mysql.escape(req.params.startDate)} AND ${mysql.escape(req.params.endDate)} ORDER BY timestamp DESC;`;
+    let timeboxEnvironmentQuery = `SELECT temperature, humidity, ambient_temp, ambient_humid, timestamp FROM DataLog WHERE timestamp BETWEEN ${mysql.escape(req.params.startDate)} AND ${mysql.escape(req.params.endDate)} ORDER BY timestamp ASC;`;
 
     logger.debug('sql ' + timeboxEnvironmentQuery);
 
