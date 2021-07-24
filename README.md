@@ -8,4 +8,4 @@ The API consists of several endpoints:
 * POST - This is where the [beer room monitor](https://github.com/man-brewing/environment_monitor) sends its data.
 
 ## Data Store
-Data is stored using [MySQL](https://www.mysql.com/) and accessed via the [mysql npm package](https://www.npmjs.com/package/mysql).
+Data is stored using [MySQL](https://www.mysql.com/) and accessed via the [Dapper](https://dapper-tutorial.net/dapper).
