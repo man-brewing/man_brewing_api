@@ -15,52 +15,52 @@ namespace Repository
         }
 
         /// <inheritdoc />
-        public DataLog Get(long id)
+        public EnvironmentLog Get(long id)
         {
             using var connection = GetDatabaseConnection();
-            return connection.Get<DataLog>(id);
+            return connection.Get<EnvironmentLog>(id);
         }
 
         /// <inheritdoc />
-        public DataLog GetMostRecent()
+        public EnvironmentLog GetMostRecent()
         {
-            var query = $"SELECT * FROM {Tables.DataLog} ORDER BY timestamp DESC LIMIT 1;";
+            var query = $"SELECT TOP 1 * FROM {Tables.EnvironmentLog} ORDER BY timestamp DESC";
             using var connection = GetDatabaseConnection();
-            return connection.QuerySingleOrDefault<DataLog>(query);
+            return connection.QuerySingleOrDefault<EnvironmentLog>(query);
         }
 
         /// <inheritdoc />
-        public IEnumerable<DataLog> GetLast(int count)
+        public IEnumerable<EnvironmentLog> GetLast(int count)
         {
-            var query = $"SELECT * FROM {Tables.DataLog} ORDER BY timestamp DESC LIMIT @count;";
+            var query = $"SELECT TOP @count * FROM {Tables.EnvironmentLog} ORDER BY timestamp DESC";
             using var connection = GetDatabaseConnection();
-            return connection.Query<DataLog>(query, new {count});
+            return connection.Query<EnvironmentLog>(query, new {count});
         }
 
         /// <inheritdoc />
-        public IEnumerable<DataLog> GetBetweenDates(DateTime start, DateTime end)
+        public IEnumerable<EnvironmentLog> GetBetweenDates(DateTime start, DateTime end)
         {
             var query =
-                $"SELECT * FROM {Tables.DataLog} WHERE timestamp BETWEEN @start AND @end ORDER BY timestamp ASC;";
+                $"SELECT * FROM {Tables.EnvironmentLog} WHERE timestamp BETWEEN @start AND @end ORDER BY timestamp ASC";
             using var connection = GetDatabaseConnection();
-            return connection.Query<DataLog>(query, new { start, end });
+            return connection.Query<EnvironmentLog>(query, new { start, end });
         }
 
         /// <inheritdoc />
-        public DataLog Save(DataLog dataLog)
+        public EnvironmentLog Save(EnvironmentLog environmentLog)
         {
             using var connection = GetDatabaseConnection();
 
-            if (dataLog.Id > 0)
+            if (environmentLog.Id > 0)
             {
-                connection.Update(dataLog);
+                connection.Update(environmentLog);
             }
             else
             {
-                dataLog.Id = connection.Insert(dataLog);
+                environmentLog.Id = connection.Insert(environmentLog);
             }
 
-            return dataLog;
+            return environmentLog;
         }
     }
 }

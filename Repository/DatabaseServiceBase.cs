@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using System.Data.SqlClient;
 using Core;
 using Core.OptionBinders;
 using Microsoft.Extensions.Configuration;
@@ -12,12 +13,12 @@ namespace Repository
 
         public DatabaseServiceBase(IConfiguration configuration)
         {
-            _connectionString = configuration.GetConnectionString(nameof(ConnectionStrings.MySql));
+            _connectionString = configuration["SqlConnectionString"];
         }
 
         public IDbConnection GetDatabaseConnection()
         {
-            return new MySqlConnection(_connectionString);
+            return new SqlConnection(_connectionString);
         }
     }
 }

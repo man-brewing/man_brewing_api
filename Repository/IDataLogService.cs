@@ -6,14 +6,14 @@ namespace Repository
 {
     public interface IDataLogService
     {
-        public DataLog Get(long id);
+        public EnvironmentLog Get(long id);
 
-        public DataLog GetMostRecent();
+        public EnvironmentLog GetMostRecent();
 
-        public IEnumerable<DataLog> GetLast(int count);
+        public IEnumerable<EnvironmentLog> GetLast(int count);
 
-        public IEnumerable<DataLog> GetBetweenDates(DateTime start, DateTime end);
+        public IEnumerable<EnvironmentLog> GetBetweenDates(DateTime start, DateTime end);
 
-        public DataLog Save(DataLog dataLog);
+        public EnvironmentLog Save(EnvironmentLog environmentLog);
     }
 }

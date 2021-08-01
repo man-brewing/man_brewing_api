@@ -2,6 +2,6 @@
 {
     public static class Tables
     {
-        public const string DataLog = "DataLog";
+        public const string EnvironmentLog = "EnvironmentLog";
     }
 }
