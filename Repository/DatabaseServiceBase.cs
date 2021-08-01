@@ -1,9 +1,6 @@
 ﻿using System.Data;
 using System.Data.SqlClient;
-using Core;
-using Core.OptionBinders;
 using Microsoft.Extensions.Configuration;
-using MySql.Data.MySqlClient;
 
 namespace Repository
 {
@@ -16,6 +13,10 @@ namespace Repository
             _connectionString = configuration["SqlConnectionString"];
         }
 
+        /// <summary>
+        /// Gets a database connection from the pool.
+        /// </summary>
+        /// <returns></returns>
         public IDbConnection GetDatabaseConnection()
         {
             return new SqlConnection(_connectionString);

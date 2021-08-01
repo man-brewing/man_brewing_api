@@ -75,6 +75,9 @@ namespace ManBrewingApi.Controllers
             return new JsonResult(result);
         }
 
+        /// <summary>
+        /// Model for data received from the environment logger box.
+        /// </summary>
         public class EnvironmentLoggerData
         {
             public double temp { get; set; }

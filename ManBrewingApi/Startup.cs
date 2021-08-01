@@ -29,6 +29,7 @@ namespace ManBrewingApi
 
             services.AddControllers();
 
+            // generate swagger API documentation
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo {Title = "Man Brewing API", Version = "1.0.0"});
@@ -42,8 +43,6 @@ namespace ManBrewingApi
                         .ScanIn(Assembly.GetExecutingAssembly()).For.Migrations();
                 })
                 .AddLogging(l => l.AddFluentMigratorConsole());
-
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -62,9 +61,11 @@ namespace ManBrewingApi
 
             app.UseSwagger();
 
+            // base url should show swagger docs
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Man Brewing API");
+                c.RoutePrefix = string.Empty;
             });
 
             app.UseEndpoints(endpoints =>
@@ -72,6 +73,7 @@ namespace ManBrewingApi
                 endpoints.MapControllers();
             });
 
+            // perform any outstanding database migrations
             using var scope = app.ApplicationServices.CreateScope();
             var runner = scope.ServiceProvider.GetService<IMigrationRunner>();
             runner.MigrateUp();
