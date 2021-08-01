@@ -8,6 +8,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Repository;
 using FluentMigrator.Runner;
+using Microsoft.Extensions.Logging;
 
 namespace ManBrewingApi
 {
@@ -23,6 +24,12 @@ namespace ManBrewingApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddApplicationInsightsTelemetry(Configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
+            services.AddLogging(l =>
+            {
+                l.AddApplicationInsights(Configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
+            });
+
             services.Configure<ConnectionStrings>(Configuration.GetSection(nameof(ConnectionStrings)));
             services.AddSingleton<IDataLogService, DataLogService>();
             services.AddSingleton<IOpenWeatherMapService, OpenWeatherMapService>();
