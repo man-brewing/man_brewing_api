@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using ExternalApis.Models;
 
-namespace Repository
+namespace ExternalApis
 {
     public interface IOpenWeatherMapService
     {

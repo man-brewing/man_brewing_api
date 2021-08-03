@@ -5,7 +5,7 @@ using Core.OptionBinders;
 using ExternalApis.Models;
 using Microsoft.Extensions.Configuration;
 
-namespace Repository
+namespace ExternalApis
 {
     public class OpenWeatherMapService : IOpenWeatherMapService
     {

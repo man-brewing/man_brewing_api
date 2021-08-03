@@ -1,5 +1,6 @@
 using System.Reflection;
 using Core.OptionBinders;
+using ExternalApis;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
