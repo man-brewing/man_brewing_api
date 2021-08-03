@@ -1,5 +1,4 @@
 using System.Reflection;
-using Core.OptionBinders;
 using ExternalApis;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -30,8 +29,7 @@ namespace ManBrewingApi
             {
                 l.AddApplicationInsights(Configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
             });
-
-            services.Configure<ConnectionStrings>(Configuration.GetSection(nameof(ConnectionStrings)));
+            
             services.AddSingleton<IDataLogService, DataLogService>();
             services.AddSingleton<IOpenWeatherMapService, OpenWeatherMapService>();
 

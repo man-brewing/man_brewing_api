@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Core.OptionBinders;
 using ExternalApis.Models;
 using Microsoft.Extensions.Configuration;
 
@@ -19,8 +18,7 @@ namespace ExternalApis
         public OpenWeatherMapService(IConfiguration configuration)
         {
             _httpClient = new HttpClient();
-            var apiOptions = configuration.GetSection(ApiOptions.Api).Get<ApiOptions>();
-            _openWeatherApiKey = apiOptions.OpenWeatherApiKey;
+            _openWeatherApiKey = configuration["OpenWeatherApiKey"];
         }
 
         /// <inheritdoc />

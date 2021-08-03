@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Core.OptionBinders;
 using ExternalApis;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Repository;
@@ -24,56 +24,120 @@ namespace ManBrewingApi.Controllers
             _configuration = configuration;
         }
 
+        /// <summary>
+        /// Gets the <see cref="EnvironmentLog"/> by ID.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet("{id}")]
         public IActionResult Get(long id)
         {
-            var result = _dataLogService.Get(id);
-            return new JsonResult(result);
+            try
+            {
+                var result = _dataLogService.Get(id);
+                return new JsonResult(result);
+            }
+            catch (Exception ex)
+            {
+                return new JsonResult(ex.Message) {StatusCode = StatusCodes.Status500InternalServerError};
+            }
         }
 
+        /// <summary>
+        /// Gets the most recent <see cref="EnvironmentLog"/> record.
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public IActionResult Get()
         {
-            var result = _dataLogService.GetMostRecent();
-            return new JsonResult(result);
+            try
+            {
+                var result = _dataLogService.GetMostRecent();
+                return new JsonResult(result);
+            }
+            catch (Exception ex)
+            {
+                return new JsonResult(ex.Message) { StatusCode = StatusCodes.Status500InternalServerError };
+            }
         }
 
+        /// <summary>
+        /// Gets the most recent 5 <see cref="EnvironmentLog"/> records.
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("history")]
         public IActionResult GetHistory()
         {
             return Redirect("history/5");
         }
 
+        /// <summary>
+        /// Gets the most recent count of <see cref="EnvironmentLog"/> records.
+        /// </summary>
+        /// <param name="count"></param>
+        /// <returns></returns>
         [HttpGet("history/{count}")]
         public IActionResult GetHistory(int count)
         {
-            var result = _dataLogService.GetLast(count);
-            return new JsonResult(result);
+            try
+            {
+                var result = _dataLogService.GetLast(count);
+                return new JsonResult(result);
+            }
+            catch (Exception ex)
+            {
+                return new JsonResult(ex.Message) { StatusCode = StatusCodes.Status500InternalServerError };
+            }
         }
 
+        /// <summary>
+        /// Gets the <see cref="EnvironmentLog"/> records between the specified dates.
+        /// </summary>
+        /// <param name="start"></param>
+        /// <param name="end"></param>
+        /// <returns></returns>
         [HttpGet("history/{start}/{end}")]
         public IActionResult GetHistory(DateTime start, DateTime end)
         {
-            var result = _dataLogService.GetBetweenDates(start, end);
-            return new JsonResult(result);
+            try
+            {
+                var result = _dataLogService.GetBetweenDates(start, end);
+                return new JsonResult(result);
+            }
+            catch (Exception ex)
+            {
+                return new JsonResult(ex.Message) { StatusCode = StatusCodes.Status500InternalServerError };
+            }
         }
 
+        /// <summary>
+        /// Saves the environment data to the database.
+        /// </summary>
+        /// <param name="environmentLoggerData"></param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<IActionResult> Save([FromForm] EnvironmentLoggerData environmentLoggerData)
         {
-            var cityId = _configuration.GetSection(ApiOptions.Api).Get<ApiOptions>().OpenWeatherCityId;
-
-            var weatherData = await _openWeatherMapService.GetCurrentWeather(cityId);
-            var dataLog = new EnvironmentLog
+            try
             {
-                WeatherHumidityPercent = weatherData.main.humidity, 
-                WeatherTemperatureC = weatherData.main.temp,
-                AmbientHumidityPercent = environmentLoggerData.humidity,
-                AmbientTemperatureC = environmentLoggerData.temp
-            };
+                var cityId = _configuration["OpenWeatherCityId"];
 
-            var result = _dataLogService.Save(dataLog);
-            return new JsonResult(result);
+                var weatherData = await _openWeatherMapService.GetCurrentWeather(cityId);
+                var dataLog = new EnvironmentLog
+                {
+                    WeatherHumidityPercent = weatherData.main.humidity,
+                    WeatherTemperatureC = weatherData.main.temp,
+                    AmbientHumidityPercent = environmentLoggerData.humidity,
+                    AmbientTemperatureC = environmentLoggerData.temp
+                };
+
+                var result = _dataLogService.Save(dataLog);
+                return new JsonResult(result);
+            }
+            catch (Exception ex)
+            {
+                return new JsonResult(ex.Message) { StatusCode = StatusCodes.Status500InternalServerError };
+            }
         }
 
         /// <summary>
