@@ -1,3 +1,5 @@
+using System;
+using System.IO;
 using System.Reflection;
 using ExternalApis;
 using Microsoft.AspNetCore.Builder;
@@ -39,6 +41,9 @@ namespace ManBrewingApi
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo {Title = "Man Brewing API", Version = "1.0.0"});
+                var xmlPath = $"{Assembly.GetExecutingAssembly().GetName().Name}.XML";
+                var xmlFile = Path.Combine(AppContext.BaseDirectory, xmlPath);
+                c.IncludeXmlComments(xmlFile);
             });
 
             services.AddFluentMigratorCore()
