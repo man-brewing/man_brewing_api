@@ -9,6 +9,8 @@ namespace ManBrewingApi.Migrations
     {
         public override void Up()
         {
+            Delete.DefaultConstraint().OnTable(Tables.EnvironmentLog).OnColumn(nameof(EnvironmentLog.Timestamp));
+
             Alter.Table(Tables.EnvironmentLog)
                 .AlterColumn(nameof(EnvironmentLog.Timestamp))
                 .AsDateTimeOffset().NotNullable();
