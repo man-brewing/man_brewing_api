@@ -13,11 +13,6 @@ namespace Repository.Models
         public double AmbientHumidityPercent { get; set; }
         public double? WeatherTemperatureC { get; set; }
         public double? WeatherHumidityPercent { get; set; }
-
-        /// <summary>
-        /// Timestamp of the record. Set by database.
-        /// </summary>
-        [Write(false)]
-        public DateTime Timestamp { get; set; }
+        public DateTimeOffset Timestamp { get; set; }
     }
 }

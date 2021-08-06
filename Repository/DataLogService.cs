@@ -50,6 +50,7 @@ namespace Repository
         public EnvironmentLog Save(EnvironmentLog environmentLog)
         {
             using var connection = GetDatabaseConnection();
+            environmentLog.Timestamp = DateTimeOffset.Now;
 
             if (environmentLog.Id > 0)
             {
