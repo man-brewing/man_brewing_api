@@ -32,7 +32,7 @@ namespace Repository
         /// <inheritdoc />
         public IEnumerable<EnvironmentLog> GetLast(int count)
         {
-            var query = $"SELECT TOP @count * FROM {Tables.EnvironmentLog} ORDER BY timestamp DESC";
+            var query = $"SELECT TOP (@count) * FROM {Tables.EnvironmentLog} ORDER BY timestamp DESC";
             using var connection = GetDatabaseConnection();
             return connection.Query<EnvironmentLog>(query, new {count});
         }
