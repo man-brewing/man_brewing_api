@@ -73,6 +73,8 @@ namespace ManBrewingApi
 
             app.UseRouting();
 
+            app.UseCors();
+
             app.UseAuthorization();
 
             app.UseSwagger();
