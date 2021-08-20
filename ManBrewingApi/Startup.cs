@@ -31,6 +31,13 @@ namespace ManBrewingApi
             {
                 l.AddApplicationInsights(Configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
             });
+
+            services.AddCors(o => o.AddDefaultPolicy(builder =>
+            {
+                builder.AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyMethod();
+            }));
             
             services.AddSingleton<IDataLogService, DataLogService>();
             services.AddSingleton<IOpenWeatherMapService, OpenWeatherMapService>();
