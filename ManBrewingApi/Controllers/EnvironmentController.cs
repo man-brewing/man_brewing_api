@@ -113,11 +113,17 @@ namespace ManBrewingApi.Controllers
         /// <summary>
         /// Saves the environment data to the database.
         /// </summary>
+        /// <param name="authToken"></param>
         /// <param name="environmentLoggerData"></param>
         /// <returns></returns>
-        [HttpPost]
-        public async Task<IActionResult> Save([FromForm] EnvironmentLoggerData environmentLoggerData)
+        [HttpPost("{authToken}")]
+        public async Task<IActionResult> Save(string authToken, [FromForm] EnvironmentLoggerData environmentLoggerData)
         {
+            if (authToken != _configuration["AuthToken"])
+            {
+                return Unauthorized();
+            }
+
             try
             {
                 var cityId = _configuration["OpenWeatherCityId"];
