@@ -97,7 +97,7 @@ namespace ManBrewingApi.Controllers
         /// <param name="end"></param>
         /// <returns></returns>
         [HttpGet("history/{start}/{end}")]
-        public IActionResult GetHistory(DateTime start, DateTime end)
+        public IActionResult GetHistory(DateTimeOffset start, DateTimeOffset end)
         {
             try
             {

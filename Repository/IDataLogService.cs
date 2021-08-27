@@ -32,7 +32,7 @@ namespace Repository
         /// <param name="start"></param>
         /// <param name="end"></param>
         /// <returns></returns>
-        public IEnumerable<EnvironmentLog> GetBetweenDates(DateTime start, DateTime end);
+        public IEnumerable<EnvironmentLog> GetBetweenDates(DateTimeOffset start, DateTimeOffset end);
 
         /// <summary>
         /// Saves the log record.

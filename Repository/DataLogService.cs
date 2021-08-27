@@ -38,7 +38,7 @@ namespace Repository
         }
 
         /// <inheritdoc />
-        public IEnumerable<EnvironmentLog> GetBetweenDates(DateTime start, DateTime end)
+        public IEnumerable<EnvironmentLog> GetBetweenDates(DateTimeOffset start, DateTimeOffset end)
         {
             var query =
                 $"SELECT * FROM {Tables.EnvironmentLog} WHERE timestamp BETWEEN @start AND @end ORDER BY timestamp ASC";
